@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Insights</title>
+</head>
+<body>
+    <h1>Data Insights</h1>
+
+    <h2>Metrics</h2>
+    <p>Total Sales: {{ metrics.total_sales }}</p>
+    <p>Total Purchases: {{ metrics.total_purchases }}</p>
+    <p>Top Product: {{ metrics.top_product }}</p>
+    <p>Top Location: {{ metrics.top_location }}</p>
+
+    <h2>Visualizations</h2>
+    <img src="{{ plot_paths.purchases_bar }}" alt="Purchases by Age Group">
+    <img src="{{ plot_paths.revenue_bar }}" alt="Revenue by Age Group">
+    <img src="{{ plot_paths.monthly_sales_plot }}" alt="Monthly Sales">
+    <img src="{{ plot_paths.product_category_plot }}" alt="Product Category Sales">
+
+    <h2>Suggestions</h2>
+    <ul>
+        {% for suggestion in suggestions %}
+            <li>{{ suggestion }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
