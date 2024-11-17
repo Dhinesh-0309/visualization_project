@@ -1,5 +1,6 @@
 from decimal import Decimal
 import os
+from urllib import request
 import pandas as pd
 import uuid
 from django.conf import settings
@@ -10,6 +11,7 @@ from .models import UserMetrics
 import plotly.express as px
 from django.contrib.auth import authenticate, login 
 from django.contrib.auth import logout 
+from .forms import QuestionForm
 
 # Define path for uploaded files
 UPLOAD_DIR = os.path.join(settings.MEDIA_ROOT, 'upload')
@@ -57,31 +59,53 @@ def generate_plots(df, agegroup_summary):
     fig1.write_image(fig1_path)  # Save as PNG
 
     # Plot Total Revenue by Age Group
-    revenue_bar = agegroup_summary
-    fig2 = px.bar(revenue_bar, x='total_revenue', y='Age Group', 
+    revenue_line = agegroup_summary
+    fig2 = px.line(revenue_line, x='Age Group', y='total_revenue', 
                   title='Total Revenue by Age Group', labels={'total_revenue': 'Revenue', 'Age Group': 'Age Group'})
-    fig2_path = os.path.join(plot_dir, f'{unique_id}_revenue_bar.png')
-    fig2.write_image(fig2_path)  # Save as PNG
-
+    fig2_path = os.path.join(plot_dir, f'{unique_id}_revenue_line.png')
+    fig2.write_image(fig2_path)
+    
+    
     # Plot Monthly Sales
     monthly_sales = df.groupby(df['Purchase Date'].dt.month)['Net Amount'].sum().reset_index()
-    fig3 = px.line(monthly_sales, x='Purchase Date', y='Net Amount', 
-                   title='Total Sales by Month', labels={'Purchase Date': 'Month', 'Net Amount': 'Sales'})
-    fig3_path = os.path.join(plot_dir, f'{unique_id}_monthly_sales.png')
-    fig3.write_image(fig3_path)  # Save as PNG
+    fig4 = px.scatter(monthly_sales, x='Purchase Date', y='Net Amount', 
+                      title='Monthly Sales Trend', labels={'Purchase Date': 'Month', 'Net Amount': 'Sales'})
+    fig4_path = os.path.join(plot_dir, f'{unique_id}_monthly_sales_scatter.png')
+    fig4.write_image(fig4_path)
 
     # Plot Product Category Sales
     prod_cat_sales = df.groupby('Product Category')['Net Amount'].sum().reset_index()
-    fig4 = px.bar(prod_cat_sales, x='Product Category', y='Net Amount', 
-                  title='Total Sales by Product Category', labels={'Product Category': 'Product Category', 'Net Amount': 'Sales'})
-    fig4_path = os.path.join(plot_dir, f'{unique_id}_prod_cat_sales.png')
-    fig4.write_image(fig4_path)  # Save as PNG
+    fig3 = px.pie(prod_cat_sales, names='Product Category', values='Net Amount', 
+                  title='Sales Distribution by Product Category')
+    fig3_path = os.path.join(plot_dir, f'{unique_id}_prod_cat_pie.png')
+    fig3.write_image(fig3_path)
+    
+    # Save as PNG
+
+    gender_sales = df.groupby('Gender')['Net Amount'].sum().reset_index()
+    fig5 = px.bar(gender_sales, x='Gender', y='Net Amount', 
+                  title='Total Purchases by Gender', labels={'Net Amount': 'Purchases', 'Gender': 'Gender'})
+    fig5_path = os.path.join(plot_dir, f'{unique_id}_gender_sales.png')
+    fig5.write_image(fig5_path) 
+    
+    # Save as PNG
+
+    # Additional Graph 2: Sales by Location
+    location_sales = df.groupby('Location')['Net Amount'].sum().reset_index()
+    fig6 = px.bar(location_sales, x='Location', y='Net Amount', 
+                  title='Total Sales by Location', labels={'Location': 'Location', 'Net Amount': 'Sales'})
+    fig6_path = os.path.join(plot_dir, f'{unique_id}_location_sales.png')
+    fig6.write_image(fig6_path) 
+    
+    # Save as PNG
 
     return {
     'purchases_bar': os.path.relpath(fig1_path, settings.MEDIA_ROOT),
     'revenue_bar': os.path.relpath(fig2_path, settings.MEDIA_ROOT),
     'monthly_sales_plot': os.path.relpath(fig3_path, settings.MEDIA_ROOT),
     'product_category_plot': os.path.relpath(fig4_path, settings.MEDIA_ROOT),
+    'gender_sales_plot': os.path.relpath(fig5_path, settings.MEDIA_ROOT),
+    'location_sales_plot': os.path.relpath(fig6_path, settings.MEDIA_ROOT),
 }
     
     
@@ -120,7 +144,8 @@ def upload_file(request):
     form = UploadFileForm()
     return render(request, 'visualizer/upload.html', {'form': form})
 
-
+from django.shortcuts import render
+from django.http import HttpResponse
 
 @login_required
 def display_page(request):
@@ -131,6 +156,11 @@ def display_page(request):
         "Review the Monthly Sales graph to identify trends or seasonality in sales.",
         "The Total Revenue by Age Group can help you identify which groups are most profitable."
     ]
+    
+    answer = None
+    if request.method == 'POST':
+        question = request.POST.get('question', '').lower()
+        answer = get_answer(question, metrics)  # Call a function to process the question
 
     # Ensure plot paths are prefixed with MEDIA_URL
     for key, path in plot_paths.items():
@@ -140,10 +170,29 @@ def display_page(request):
         'plot_paths': plot_paths,
         'metrics': metrics,
         'suggestions': suggestions,
+        'answer': answer,  # Pass the answer back to the template
     })
 
-    
-    
+
+# Function to get insights based on selected question
+def get_answer(question, metrics):
+    if "total sales" in question:
+        return f"Total Sales: {round(metrics['total_sales'], 2)}"
+    elif "top product" in question:
+        return f"Top Product: {metrics.get('top_product', 'Not available')}. This is your best-seller!"
+    elif "top location" in question:
+        return f"Top Location: {metrics.get('top_location', 'Not available')}. Focus your marketing efforts here."
+    elif "discount effectiveness" in question:
+        return "The effectiveness of discounts varies across different age groups and product categories. Focus your discounts where they have the most impact."
+    elif "customer retention" in question:
+        return "Customers who make multiple purchases tend to generate more revenue over time. Consider loyalty programs to retain them."
+    elif "seasonality" in question:
+        return "Sales peak during the holiday season. Focus on special offers during these periods to maximize revenue."
+    else:
+        return "Sorry, I can't answer that question right now."
+
+
+
 def signup(request):
     if request.method == 'POST':
         form = SignupForm(request.POST)

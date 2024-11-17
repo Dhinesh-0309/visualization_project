@@ -2,17 +2,111 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+
+    <!-- Google Fonts for fancy typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif; /* Using Poppins font for elegance */
+            margin: 0;
+            padding: 0;
+            background-image: url('https://images.unsplash.com/photo-1521747116042-5e58b45c1e6e'); /* Background Image */
+            background-size: cover;
+            background-position: center;
+            color: #333; /* Dark gray font color for better contrast */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        /* Title Styling */
+        h2 {
+            font-size: 3em;
+            color: #2c3e50; /* Darker font color for titles */
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        p {
+            font-size: 1.2em;
+            color: #2c3e50; /* Darker color for body text */
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #3498db;
+            font-size: 1.5em;
+            font-weight: 500;
+            padding: 12px 30px;
+            border-radius: 50px;
+            border: 2px solid #3498db;
+            transition: all 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #3498db;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .features {
+            margin-top: 40px;
+            max-width: 90%;
+            text-align: left;
+        }
+
+        .features h3 {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .features ul {
+            list-style-type: none;
+            padding-left: 0;
+            font-size: 1.2em;
+            color: #2c3e50; /* Darker text for list items */
+        }
+
+        .features li {
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        .features li strong {
+            color: #3498db;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome, {{ user.username }}</h1>
-    <p>Total Sales: {{ metrics.total_sales }}</p>
-    <p>Total Purchases: {{ metrics.total_purchases }}</p>
-    <p>Top Product: {{ metrics.top_product }}</p>
-    <p>Top Location: {{ metrics.top_location }}</p>
 
-    <h2>Ready to Upload New Data?</h2>
-    <p>Click the link below to upload your data:</p>
+    <h2>Welcome to Your Dashboard!</h2>
+    <p>Our platform provides powerful data analytics and insights to help you grow your business.</p>
+    <p>Ready to upload new data? Click below to get started:</p>
     <a href="{% url 'upload_file' %}">Go to Upload Page</a>
+
+    <div class="features">
+        <h3>Why Use This Platform?</h3>
+        <ul>
+            <li><strong>Understand Your Customer's Behavior:</strong> Gain insights into user preferences, buying patterns, and more.</li>
+            <li><strong>Visualize Your Data:</strong> Generate stunning graphs and charts that make data easy to interpret.</li>
+            <li><strong>Improve Your Sales:</strong> Use our suggestions to target the right age groups and locations for your products.</li>
+            <li><strong>Grow Your Business:</strong> Make data-driven decisions to enhance customer experience and increase revenue.</li>
+        </ul>
+    </div>
+
 </body>
 </html>

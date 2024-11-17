@@ -4,14 +4,118 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signup</title>
+
+    <!-- Google Fonts for elegant typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif; /* Elegant font */
+            margin: 0;
+            padding: 0;
+            background-image: url('https://images.unsplash.com/photo-1581093582221-d25f25b585e9'); /* Background image */
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            text-align: center;
+        }
+
+        /* Signup form container */
+        .signup-form {
+            background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent dark background */
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            width: 100%;
+            max-width: 450px;
+        }
+
+        h2 {
+            color: #fff;
+            font-size: 2.5em;
+            margin-bottom: 25px;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Input fields styling */
+        input[type="text"],
+        input[type="password"],
+        input[type="email"] {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            box-sizing: border-box;
+            color: #333;
+            background-color: #fff;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        input[type="email"]:focus {
+            border: 2px solid #3498db;
+            outline: none;
+        }
+
+        /* Button styling */
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #3498db;
+            color: #fff;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Link styling */
+        a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.1em;
+            display: block;
+            margin-top: 15px;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #3498db;
+        }
+
+        /* Small text styling */
+        p {
+            font-size: 1.1em;
+            color: #ccc;
+            margin-top: 10px;
+        }
+
+    </style>
 </head>
 <body>
-    <h2>Signup</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Signup</button>
-    </form>
-    <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+
+    <div class="signup-form">
+        <h2>Signup</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Signup</button>
+        </form>
+        <p>Already have an account? <a href="{% url 'login' %}">Login</a></p>
+    </div>
+
 </body>
 </html>

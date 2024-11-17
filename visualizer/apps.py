@@ -1,5 +1,5 @@
 # visualizer/forms.py
-from django import forms
+from django.apps import AppConfig
 
-class UploadFileForm(forms.Form):
-    file = forms.FileField()  # The file field to upload a CSV
+class VisualizerConfig(AppConfig):
+    name = 'visualizer' 

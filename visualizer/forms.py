@@ -15,3 +15,6 @@ class LoginForm(forms.Form):
 
 class UploadFileForm(forms.Form):
     file = forms.FileField()
+    
+class QuestionForm(forms.Form):
+    question = forms.CharField(max_length=500, widget=forms.Textarea(attrs={'placeholder': 'Ask a question about the data...'}))   

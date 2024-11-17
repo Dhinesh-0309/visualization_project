@@ -3,27 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <title>Data Insights</title>
+    <!-- Google Fonts for Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+            color: #333;
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #2c3e50;
+            margin-top: 40px;
+            font-weight: 600;
+        }
+
+        h2 {
+            font-size: 2em;
+            color: #2980b9;
+            margin: 30px 0 15px;
+            font-weight: 600;
+        }
+
+        p {
+            font-size: 1.2em;
+            color: #34495e;
+        }
+
+        .metrics, .visualizations, .question-form {
+            background-color: #fff;
+            padding: 25px;
+            margin: 20px auto;
+            width: 80%;
+            max-width: 900px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .metrics p, .visualizations p {
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        .plot {
+            margin: 20px 0;
+        }
+
+        .plot img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-form select, .question-form button {
+            padding: 12px;
+            font-size: 1.2em;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 2px solid #3498db;
+            width: 100%;
+            max-width: 400px;
+            background-color: #f4f6f9;
+            box-sizing: border-box;
+        }
+
+        .question-form button {
+            background-color: #3498db;
+            color: #fff;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .question-form button:hover {
+            background-color: #2980b9;
+        }
+
+        .answer {
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            color: #2c3e50;
+            font-size: 1.1em;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .metrics, .visualizations, .question-form {
+                width: 90%;
+            }
+        }
+    </style>
 </head>
 <body>
+
     <h1>Data Insights</h1>
 
-    <h2>Metrics</h2>
-    <p>Total Sales: {{ metrics.total_sales }}</p>
-    <p>Total Purchases: {{ metrics.total_purchases }}</p>
-    <p>Top Product: {{ metrics.top_product }}</p>
-    <p>Top Location: {{ metrics.top_location }}</p>
+    <div class="metrics">
+        <h2>Metrics</h2>
+        <p>Total Sales: <span style="color: #e74c3c;">${{ metrics.total_sales }}</span></p>
+        <p>Total Purchases: <span style="color: #27ae60;">{{ metrics.total_purchases }}</span></p>
+        <p>Top Product: <span style="color: #f39c12;">{{ metrics.top_product }}</span></p>
+        <p>Top Location: <span style="color: #8e44ad;">{{ metrics.top_location }}</span></p>
+    </div>
 
-    <h2>Visualizations</h2>
-    <img src="{{ plot_paths.purchases_bar }}" alt="Purchases by Age Group">
-    <img src="{{ plot_paths.revenue_bar }}" alt="Revenue by Age Group">
-    <img src="{{ plot_paths.monthly_sales_plot }}" alt="Monthly Sales">
-    <img src="{{ plot_paths.product_category_plot }}" alt="Product Category Sales">
-
-    <h2>Suggestions</h2>
-    <ul>
-        {% for suggestion in suggestions %}
-            <li>{{ suggestion }}</li>
+    <div class="visualizations">
+        <h2>Visualizations</h2>
+        {% for plot_name, plot_path in plot_paths.items %}
+            <div class="plot">
+                <img src="{{ plot_path }}" alt="{{ plot_name }}" class="plot-image">
+            </div>
         {% endfor %}
-    </ul>
+    </div>
+
+    <div class="question-form">
+        <h2>Ask a Question</h2>
+        <form method="POST">
+            {% csrf_token %}
+            <label for="question" style="font-size: 1.2em; color: #2980b9;">Select a question about the data:</label>
+            <select id="question" name="question">
+                <option value="total sales">What is the total sales for the last month?</option>
+                <option value="top product">Which product category is performing the best?</option>
+                <option value="top location">What is the top location for purchases?</option>
+                <option value="discount effectiveness">How effective are the discounts?</option>
+                <option value="customer retention">What can I do to retain more customers?</option>
+                <option value="seasonality">What is the seasonality trend for sales?</option>
+            </select>
+            <button type="submit">Get Insight</button>
+        </form>
+    </div>
+
+    {% if answer %}
+        <div class="answer">
+            <h3>Business Insight</h3>
+            <p>{{ answer }}</p>
+        </div>
+    {% endif %}
+
 </body>
 </html>
