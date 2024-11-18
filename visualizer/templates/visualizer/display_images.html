@@ -119,11 +119,11 @@
 
     <div class="visualizations">
         <h2>Visualizations</h2>
-        {% for plot_name, plot_path in plot_paths.items %}
-            <div class="plot">
-                <img src="{{ plot_path }}" alt="{{ plot_name }}" class="plot-image">
-            </div>
-        {% endfor %}
+        {% for plot_name, plot_html in plot_paths.items %}
+        <div class="plot">
+            {{ plot_html|safe }}
+        </div>
+    {% endfor %}
     </div>
 
     <div class="question-form">
